@@ -1,0 +1,132 @@
+import java.util.Scanner;
+public class ArabicAndRomanCalculator {
+    public static void main(String[] args) {
+        int number1, number2;
+        char operation = 'k';
+        int result;
+
+        Scanner sc = new Scanner(System.in);
+        String input = sc.nextLine();
+        char[] arrayOfChars = input.toCharArray();
+
+        // ищем сначала чему равен оператор
+        try {
+            for (int i = 0; i < arrayOfChars.length; i++) {
+                if (arrayOfChars[i] == '+') {
+                    operation = '+';
+                } else if (arrayOfChars[i] == '-') {
+                    operation = '-';
+                } else if (arrayOfChars[i] == '*') {
+                    operation = '*';
+                } else if (arrayOfChars[i] == '/') {
+                    operation = '/';
+                }
+            }
+            if (operation == 'k') {
+                throw new Exception("//т.к нет оператора");
+            }
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+
+        String charString = String.valueOf(arrayOfChars);
+        String[] arrayOfStrings = charString.split("[+-/*]");
+        try {
+            if (arrayOfStrings.length != 2) {
+                throw new Exception("//т.к. формат математической операции не удовлетворяет заданию - два операнда и один оператор (+, -, /, *)");
+            } else {
+                String numberStr1 = arrayOfStrings[0].trim();
+                String numberSt2r = arrayOfStrings[1].trim();
+                number1 = romanToInt(numberStr1);
+                number2 = romanToInt(numberSt2r);
+
+                // если значение получилось меньше нуля, то это арабская цифра, если больше - римская
+                if (number1 < 0 && number2 < 0) {
+                    result = 0;
+                    number1 = Integer.parseInt(numberStr1);
+                    number2 = Integer.parseInt(numberSt2r);
+
+                    if (number1 > 10 || number2 > 10){
+                        throw new Exception("//т.к. числа не могут быть больше 10");
+                    }
+                    result = calculated(number1, number2, operation);
+                    System.out.print(result);
+                } else if ((number1 < 0 && number2 > 0) || (number1 > 0 && number2 < 0) ){
+                    throw new Exception("//т.к. используются одновременно разные системы счисления");
+                } else {
+                    result = calculated(number1, number2, operation);
+                    if (result <= 0){
+                        throw new Exception("//т.к. в римской системе нет отрицательных чисел");
+                    }
+                    String resultStr = convertNumToRoman(result);
+                    System.out.print(resultStr);
+                }
+            }
+        } catch (Exception e) {
+            System.out.print(e);
+        }
+    }
+
+    // метод, который превращает римское число в инт. Если число арабское, то возвращает -1
+    private static int romanToInt(String roman) {
+        if (roman.equals("I")) {
+            return 1;
+        } else if (roman.equals("II")) {
+            return 2;
+        } else if (roman.equals("III")) {
+            return 3;
+        } else if (roman.equals("IV")) {
+            return 4;
+        } else if (roman.equals("V")) {
+            return 5;
+        } else if (roman.equals("VI")) {
+            return 6;
+        } else if (roman.equals("VII")) {
+            return 7;
+        } else if (roman.equals("VIII")) {
+            return 8;
+        } else if (roman.equals("IX")) {
+            return 9;
+        } else if (roman.equals("X")) {
+            return 10;
+        }
+        return -1;
+    }
+
+    // метод, который считает пример из двух чисел
+    private static int calculated(int num1, int num2, char op) {
+        int result = 0;
+        switch (op) {
+            case '+':
+                result = num1 + num2;
+                break;
+            case '-':
+                result = num1 - num2;
+                break;
+            case '*':
+                result = num1 * num2;
+                break;
+            case '/':
+                result = num1 / num2;
+                break;
+            default:
+                result = 0;
+                break;
+        }
+        return  result;
+    }
+
+    //превращает число инт в римское число
+    private static String convertNumToRoman (int numArabian) {
+        String[] roman = {"O", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII", "XVIII", "XIX", "XX",
+                "XXI", "XXII", "XXIII", "XXIV", "XXV", "XXVI", "XXVII", "XXVIII", "XXIX", "XXX", "XXXI", "XXXII", "XXXIII", "XXXIV", "XXXV", "XXXVI", "XXXVII", "XXXVIII", "XXXIX", "XL",
+                "XLI", "XLII", "XLIII", "XLIV", "XLV", "XLVI", "XLVII", "XLVIII", "XLIX", "L", "LI", "LII", "LIII", "LIV", "LV", "LVI", "LVII", "LVIII", "LIX", "LX",
+                "LXI", "LXII", "LXIII", "LXIV", "LXV", "LXVI", "LXVII", "LXVIII", "LXIX", "LXX",
+                "LXXI", "LXXII", "LXXIII", "LXXIV", "LXXV", "LXXVI", "LXXVII", "LXXVIII", "LXXIX", "LXXX",
+                "LXXXI", "LXXXII", "LXXXIII", "LXXXIV", "LXXXV", "LXXXVI", "LXXXVII", "LXXXVIII", "LXXXIX", "XC",
+                "XCI", "XCII", "XCIII", "XCIV", "XCV", "XCVI", "XCVII", "XCVIII", "XCIX", "C"
+        };
+        String s = roman[numArabian];
+        return s;
+    }
+}
